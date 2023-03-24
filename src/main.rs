@@ -20,8 +20,8 @@ const CIRCLE_STARTING_POS: Pos2 = Pos2 {
     y: RECT_CANVAS_START.y * 2.,
 };
 
-const CIRCLES_NUMBER: u32 = 50;
-const CIRCLES_MIN_RADIUS: f32 = 3.;
+const CIRCLES_NUMBER: u32 = 500;
+const CIRCLES_MIN_RADIUS: f32 = 5.;
 const CIRCLES_MAX_RADIUS: f32 = 15.;
 const GRAVITY: Vec2 = Vec2 { x: 0., y: 0.1 };
 const SLEEPING_FRAME_MS: u64 = 1;
@@ -165,7 +165,7 @@ impl App {
         }
 
         let position = Pos2 {
-            x: CIRCLE_STARTING_POS.x + self.next_entity_id as f32 * 5.,
+            x: CIRCLE_STARTING_POS.x + self.next_entity_id as f32 * 5. % 500.,
             ..CIRCLE_STARTING_POS
         };
         // let radius = CIRCLES_MAX_RADIUS;
@@ -236,8 +236,8 @@ impl App {
 
             let entity = self.entities.get_mut(i).unwrap();
 
-            entity.apply_circle_contraint();
-            // entity.apply_contraint();
+            // entity.apply_circle_contraint();
+            entity.apply_contraint();
             entity.update();
         }
     }
