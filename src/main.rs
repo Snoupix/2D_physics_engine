@@ -20,7 +20,7 @@ const CIRCLE_STARTING_POS: Pos2 = Pos2 {
     y: RECT_CANVAS_START.y * 2.,
 };
 
-const CIRCLES_NUMBER: u32 = 2;
+const CIRCLES_NUMBER: u32 = 50;
 const CIRCLES_MIN_RADIUS: f32 = 3.;
 const CIRCLES_MAX_RADIUS: f32 = 15.;
 const GRAVITY: Vec2 = Vec2 { x: 0., y: 0.1 };
@@ -49,17 +49,7 @@ impl Eq for Entity {}
 
 impl Entity {
     fn update(&mut self) {
-        let mut velocity = self.position - self.old_position;
-        // if velocity.x < 5. {
-        //     velocity.x = -2.;
-        // } else if velocity.y > 5. {
-        //     velocity.x = 2.;
-        // }
-        // if velocity.y < 5. {
-        //     velocity.y = -2.;
-        // } else if velocity.y > 5. {
-        //     velocity.y = 2.;
-        // }
+        let velocity = self.position - self.old_position;
         self.old_position = self.position;
         self.apply_gravity();
         self.position = self.position + velocity + self.acceleration;
@@ -87,8 +77,8 @@ impl Entity {
             let mass_ratio_2 = other.radius / (self.radius + other.radius);
             let delta = 0.5 * response_coef * (dist - min_dist);
 
-            self.old_position = self.position;
-            other.old_position = self.position;
+            // self.old_position = self.position;
+            // other.old_position = other.position;
 
             self.position -= n * (mass_ratio_2 * delta);
             other.position += n * (mass_ratio_1 * delta);
