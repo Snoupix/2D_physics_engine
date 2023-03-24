@@ -20,7 +20,7 @@ const CIRCLE_STARTING_POS: Pos2 = Pos2 {
     y: RECT_CANVAS_START.y * 2.,
 };
 
-const CIRCLES_NUMBER: u32 = 500;
+const CIRCLES_NUMBER: u32 = 750;
 const CIRCLES_MIN_RADIUS: f32 = 5.;
 const CIRCLES_MAX_RADIUS: f32 = 15.;
 const GRAVITY: Vec2 = Vec2 { x: 0., y: 0.1 };
@@ -236,8 +236,8 @@ impl App {
 
             let entity = self.entities.get_mut(i).unwrap();
 
-            // entity.apply_circle_contraint();
-            entity.apply_contraint();
+            entity.apply_circle_contraint();
+            // entity.apply_contraint();
             entity.update();
         }
     }
@@ -276,13 +276,21 @@ impl eframe::App for Window {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         let dt = (self.frame_time.elapsed().as_millis() * (1000 / SLEEPING_FRAME_MS as u128)) / 60;
         self.frames += 1;
-        // let stroke = egui::Stroke {
-        //     width: WINDOW_SIZE.x,
-        //     color: Color32::TRANSPARENT,
-        // };
-        // let frame = egui::Frame::default()
-        //     .fill(Color32::TRANSPARENT)
-        //     .stroke(stroke);
+
+        egui::TopBottomPanel::top("app state").show(ctx, |ui| {
+            ui.label(
+                egui::RichText::new(format!("{} entities", self.app.entities.len()))
+                    .color(Color32::WHITE)
+                    .size(12.)
+                    .strong(),
+            );
+            ui.label(
+                egui::RichText::new(format!("{} frames drawn", self.frames))
+                    .color(Color32::WHITE)
+                    .size(12.)
+                    .strong(),
+            );
+        });
 
         egui::CentralPanel::default().show(ctx, |ui| {
             egui::Frame::dark_canvas(ui.style()).show(ui, |ui| {
@@ -295,12 +303,8 @@ impl eframe::App for Window {
                 self.app.draw_cricles(ui);
 
                 for _ in 0..2 {
-                    // if self.frames % 2 == 0 {
                     self.app.update_entities();
                 }
-
-                // for _ in 0..MAX_FPS / SUB_STEPS {
-                // }
             });
 
             ui.centered_and_justified(|ui| {
