@@ -274,7 +274,8 @@ impl Window {
 
 impl eframe::App for Window {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        let dt = (self.frame_time.elapsed().as_millis() * (1000 / SLEEPING_FRAME_MS as u128)) / 60;
+        let elapsed = self.frame_time.elapsed().as_secs();
+        let fps = self.frames / if elapsed == 0 { 1 } else { elapsed };
         self.frames += 1;
 
         egui::TopBottomPanel::top("app state").show(ctx, |ui| {
@@ -285,7 +286,7 @@ impl eframe::App for Window {
                     .strong(),
             );
             ui.label(
-                egui::RichText::new(format!("{} frames drawn", self.frames))
+                egui::RichText::new(format!("{fps} FPS"))
                     .color(Color32::WHITE)
                     .size(12.)
                     .strong(),
@@ -306,15 +307,6 @@ impl eframe::App for Window {
                     self.app.update_entities();
                 }
             });
-
-            ui.centered_and_justified(|ui| {
-                ui.label(
-                    egui::RichText::new(format!("{} FPS", dt))
-                        .color(Color32::GREEN)
-                        .size(25.)
-                        .strong(),
-                );
-            });
         });
 
         if ctx.input(|i| i.keys_down.get(&egui::Key::Escape).is_some()) {
@@ -322,7 +314,6 @@ impl eframe::App for Window {
             std::process::exit(0);
         }
 
-        self.frame_time = Instant::now();
         sleep(Duration::from_millis(SLEEPING_FRAME_MS));
         ctx.request_repaint();
     }
